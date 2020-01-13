@@ -1,0 +1,54 @@
+#ifndef MINESWEEPER_H_
+#define MINESWEEPER_H_
+
+#include <utility>
+#include <vector>
+
+enum class CellState {
+	CLOSED = -1,
+	OPENED = 0,
+	FLAGGED = -2,
+};
+
+class Minesweeper {
+public: 
+	using position_type = std::pair<size_t, size_t>;
+private:
+	std::vector<std::vector<char>> cells;
+	std::vector<std::vector<bool>> mines;
+	position_type cursorPosition{0,0};
+
+	size_t minesCount;
+	bool lost = false;
+	size_t openedCells = 0;
+	bool initialized = false;
+
+	void open_cell(const position_type pos);
+	void initialize_mines();
+	size_t count_neighbours(const position_type pos) const;
+
+public:
+	Minesweeper(const size_t gridSize);
+
+	size_t columns() const;
+	size_t rows() const;
+
+	CellState at(const size_t row, const size_t col) const;
+	CellState at(const position_type pos) const;
+	bool is_mine(const size_t row, const size_t col) const;
+	size_t neighbours(const size_t row, const size_t col) const;
+
+	bool finished() const;
+	bool won() const;
+
+	position_type cursor() const;
+
+	void up();
+	void right();
+	void down();
+	void left();
+	void toggle_flag();
+	void open();
+};
+
+#endif

@@ -1,0 +1,19 @@
+#ifndef RANDOM_H_
+#define RANDOM_H_
+
+#include <random>
+#include <ctime>
+
+class RandomSize {
+private:
+	std::mt19937 generator{static_cast<long unsigned int>(std::time(NULL))};
+	std::uniform_int_distribution<size_t> dis;
+
+public:
+	size_t operator()(const size_t maxVal) {
+		dis.param(decltype(dis)::param_type{0, maxVal});
+		return dis(generator);
+	}
+};
+
+#endif
