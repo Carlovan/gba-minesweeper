@@ -8,6 +8,8 @@
 
 #include <iostream>
 #include <map>
+#include <chrono>
+#include <thread>
 
 #include <minesweeper>
 
@@ -27,6 +29,7 @@ const std::string LOST_MSG = "You lost :(\n";
 const std::map<CellState, char> STATES_SYM = {{CellState::CLOSED, 'H'}, {CellState::FLAGGED, '!'}};
 
 void draw_grid(const Minesweeper &game) {
+	std::cout<<"\x1B[2J\x1B[H";
 	std::cout<<'+';
 	for(size_t i = 0; i < game.columns(); i++)
 		std::cout<<'-';
@@ -60,8 +63,18 @@ Command read_command() {
 	return static_cast<Command>(cmd);
 }
 
+void sleep_msecs(unsigned int ms) {
+	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+}
+
+void cell_opened_callback(const Minesweeper &game, size_t row, size_t col) {
+	draw_grid(game);
+	sleep_msecs(50);
+}
+
 int main() {
 	Minesweeper game(GRID_SIZE);
+	game.setCellOpenedCallback(cell_opened_callback);
 
 	std::cout<<START_MSG;
 

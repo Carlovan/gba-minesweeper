@@ -47,6 +47,14 @@ Minesweeper::position_type Minesweeper::cursor() const {
 	return cursorPosition;
 }
 
+void Minesweeper::setCellOpenedCallback(cellopened_callback_type callback) {
+	cellopenedCallback = callback;
+}
+
+void Minesweeper::removeCellOpenedCallback() {
+	setCellOpenedCallback(nullptr);
+}
+
 void Minesweeper::up() {
 	if (cursorPosition.first > 0)
 		cursorPosition.first--;
@@ -105,6 +113,7 @@ void Minesweeper::open_cell(const position_type pos) {
 		const auto minesNear = count_neighbours(pos);
 		cells[pos.first][pos.second] = minesNear;
 		openedCells++;
+		if (cellopenedCallback != nullptr) cellopenedCallback(*this, pos.first, pos.second);
 		// If there are no mines near me open the neighbours
 		if (minesNear == 0) {
 			for (int v = -1; v <= 1; v++) {

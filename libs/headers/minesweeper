@@ -13,6 +13,7 @@ enum class CellState {
 class Minesweeper {
 public: 
 	using position_type = std::pair<size_t, size_t>;
+	using cellopened_callback_type = void(*)(const Minesweeper &game, size_t row, size_t col);
 private:
 	std::vector<std::vector<char>> cells;
 	std::vector<std::vector<bool>> mines;
@@ -22,6 +23,7 @@ private:
 	bool lost = false;
 	size_t openedCells = 0;
 	bool initialized = false;
+	cellopened_callback_type cellopenedCallback = nullptr;
 
 	void open_cell(const position_type pos);
 	void initialize_mines();
@@ -42,6 +44,9 @@ public:
 	bool won() const;
 
 	position_type cursor() const;
+
+	void setCellOpenedCallback(cellopened_callback_type callback);
+	void removeCellOpenedCallback();
 
 	void up();
 	void right();
