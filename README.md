@@ -5,8 +5,9 @@ I just like programming for the GameBoy Advance and I find Minesweeper to be a p
 # PC version
 I wrote a simple console version of the game. I did that to help separate the actual game logic from the "user interface".
 
-## Running
-Just run `make`, then run `./pc`.
+## Compiling & Running
+To compile the PC version run `make -f Makefile.pc`. Running `make` will compile the GBA version.
+Then just run `./pc`.
 
 ## Usage
 Type a command and press `Enter ↵`. Commands are
