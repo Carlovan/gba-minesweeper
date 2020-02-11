@@ -26,6 +26,7 @@ SOURCES		:= libs gba_game
 INCLUDES	:= libs/headers
 DATA		:=
 MUSIC		:=
+GRAPHICS	:= images
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -74,7 +75,8 @@ export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
 
 export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 
-CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
+IMGFILES	:=	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.bmp)))
+CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c))) $(IMGFILES:.bmp=.c)
 CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
@@ -104,7 +106,7 @@ export OFILES_SOURCES := $(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
  
 export OFILES := $(OFILES_BIN) $(OFILES_SOURCES)
 
-export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
+export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES))) $(IMGFILES:.bmp=.h)
 
 export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
@@ -158,6 +160,11 @@ soundbank.bin soundbank.h : $(AUDIOFILES)
 	@echo $(notdir $<)
 	@$(bin2o)
 
+#---------------------------------------------------------------------------------
+# This rule converts images to arrays
+#---------------------------------------------------------------------------------
+%.h %.c:	%.bmp
+	grit $< -ftc -ff $(<:.bmp=.grit)
 
 
 -include $(DEPSDIR)/*.d
