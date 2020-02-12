@@ -1,0 +1,51 @@
+#ifndef BACKGROUNDS_H
+#define BACKGROUNDS_H
+
+#include <optional>
+#include <tonc_types.h>
+#include <tonc_memdef.h>
+#include <tonc_memmap.h>
+
+enum class BgBitDepht: u16 {
+	BPP4 = BG_4BPP,
+	BPP8 = BG_8BPP,
+};
+
+enum class BgSize: u16 {
+	REG_32x32 = BG_REG_32x32,
+	REG_64x32 = BG_REG_64x32,
+	REG_32x64 = BG_REG_32x64,
+	REG_64x64 = BG_REG_64x64,
+	AFF_16x16 = BG_AFF_16x16,
+	AFF_32x32 = BG_AFF_32x32,
+	AFF_64x64 = BG_AFF_64x64,
+	AFF_128x128 = BG_AFF_128x128,
+};
+
+class Background {
+private:
+	vu16* REG_CNT;
+	int index;
+	Background(int index_, u16 priority, u16 cbb, u16 sbb, u16 bpp, u16 size);
+
+public:
+	// Copy constructor/assignement
+	Background(const Background &other) = delete;
+	Background& operator=(const Background &other) = delete;
+
+	// Move constructor/assignement
+	Background(Background &&other);
+	Background& operator=(Background &&other);
+
+	// Checks validity of the parameters and builds the Background object
+	static std::optional<Background> create(int index, int priority, int cbb, int sbb, BgBitDepht bpp, BgSize size);
+
+	~Background();
+
+	// Getters
+	int bgIndex() const;
+	SCREENBLOCK& getSbb() const;
+
+};
+
+#endif
