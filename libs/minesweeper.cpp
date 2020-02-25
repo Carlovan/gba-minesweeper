@@ -2,7 +2,7 @@
 #include <random_helpers>
 
 Minesweeper::Minesweeper(const size_t gridSize):
-	cells(gridSize, std::vector(gridSize, static_cast<char>(CellState::CLOSED))),
+	cells(gridSize, std::vector(gridSize, static_cast<cell_type>(CellState::CLOSED))),
 	mines(gridSize, std::vector(gridSize, false)) {}
 
 size_t Minesweeper::columns() const {
@@ -77,7 +77,7 @@ void Minesweeper::left() {
 
 void Minesweeper::toggle_flag() {
 	if (at(cursor()) != CellState::OPENED) {
-		cells[cursor().first][cursor().second] = static_cast<char>(at(cursor()) == CellState::CLOSED ? CellState::FLAGGED : CellState::CLOSED);
+		cells[cursor().first][cursor().second] = static_cast<cell_type>(at(cursor()) == CellState::CLOSED ? CellState::FLAGGED : CellState::CLOSED);
 	}
 }
 

@@ -14,8 +14,9 @@ class Minesweeper {
 public: 
 	using position_type = std::pair<size_t, size_t>;
 	using cellopened_callback_type = void(*)(const Minesweeper &game, size_t row, size_t col);
+	using cell_type = signed char;
 private:
-	std::vector<std::vector<char>> cells;
+	std::vector<std::vector<cell_type>> cells;
 	std::vector<std::vector<bool>> mines;
 	position_type cursorPosition{0,0};
 
