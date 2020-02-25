@@ -21,8 +21,8 @@ CellState Minesweeper::at(const size_t row, const size_t col) const {
 	return static_cast<CellState>(cells[row][col]);
 }
 
-CellState Minesweeper::at(const std::pair<size_t, size_t> pos) const {
-	return at(pos.first, pos.second);
+CellState Minesweeper::at(const position_type pos) const {
+	return at(pos.y, pos.x);
 }
 
 bool Minesweeper::is_mine(const size_t row, const size_t col) const {
@@ -56,28 +56,28 @@ void Minesweeper::removeCellOpenedCallback() {
 }
 
 void Minesweeper::up() {
-	if (cursorPosition.first > 0)
-		cursorPosition.first--;
+	if (cursorPosition.y > 0)
+		cursorPosition.y--;
 }
 
 void Minesweeper::right() {
-	if (cursorPosition.second < columns()-1)
-		cursorPosition.second++;
+	if (cursorPosition.x < columns()-1)
+		cursorPosition.x++;
 }
 
 void Minesweeper::down() {
-	if (cursorPosition.first < rows()-1)
-		cursorPosition.first++;
+	if (cursorPosition.y < rows()-1)
+		cursorPosition.y++;
 }
 
 void Minesweeper::left() {
-	if (cursorPosition.second > 0)
-		cursorPosition.second--;
+	if (cursorPosition.x > 0)
+		cursorPosition.x--;
 }
 
 void Minesweeper::toggle_flag() {
 	if (at(cursor()) != CellState::OPENED) {
-		cells[cursor().first][cursor().second] = static_cast<cell_type>(at(cursor()) == CellState::CLOSED ? CellState::FLAGGED : CellState::CLOSED);
+		cells[cursor().y][cursor().x] = static_cast<cell_type>(at(cursor()) == CellState::CLOSED ? CellState::FLAGGED : CellState::CLOSED);
 	}
 }
 
@@ -96,8 +96,8 @@ size_t Minesweeper::count_neighbours(const position_type pos) const {
 	size_t count = 0;
 	for(int v = -1; v <= 1; v++) {
 		for(int h = -1; h <= 1; h++) {
-			size_t r = pos.first + v;
-			size_t c = pos.second + h;
+			size_t r = pos.y + v;
+			size_t c = pos.x + h;
 			if (r < rows() && c < columns()) {
 				count += mines[r][c];
 			}
@@ -107,19 +107,19 @@ size_t Minesweeper::count_neighbours(const position_type pos) const {
 }
 
 void Minesweeper::open_cell(const position_type pos) {
-	if (mines[pos.first][pos.second]) {
+	if (mines[pos.y][pos.x]) {
 		lost = true;
 	} else if (at(pos) != CellState::OPENED) {
 		const auto minesNear = count_neighbours(pos);
-		cells[pos.first][pos.second] = minesNear;
+		cells[pos.y][pos.x] = minesNear;
 		openedCells++;
-		if (cellopenedCallback != nullptr) cellopenedCallback(*this, pos.first, pos.second);
+		if (cellopenedCallback != nullptr) cellopenedCallback(*this, pos.y, pos.x);
 		// If there are no mines near me open the neighbours
 		if (minesNear == 0) {
 			for (int v = -1; v <= 1; v++) {
 				for(int h = -1; h <= 1; h++) {
-					size_t r = pos.first + v;
-					size_t c = pos.second + h;
+					size_t r = pos.y + v;
+					size_t c = pos.x + h;
 					if ((h != 0 || v != 0) && r < rows() && c < columns()) {
 						open_cell({r, c});
 					}

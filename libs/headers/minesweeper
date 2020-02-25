@@ -12,7 +12,15 @@ enum class CellState {
 
 class Minesweeper {
 public: 
-	using position_type = std::pair<size_t, size_t>;
+	struct position_type {
+		size_t x, y;
+		position_type operator+(const position_type &other) const {
+			return {x + other.x, y + other.y};
+		}
+		bool operator==(const position_type &other) const {
+			return x == other.x && y == other.y;
+		}
+	};
 	using cellopened_callback_type = void(*)(const Minesweeper &game, size_t row, size_t col);
 	using cell_type = signed char;
 private:

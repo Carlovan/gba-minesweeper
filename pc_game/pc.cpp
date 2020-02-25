@@ -39,7 +39,7 @@ void draw_grid(const Minesweeper &game) {
 		for(size_t c = 0; c < game.columns(); c++) {
 			if (game.finished() && game.is_mine(r, c)) {
 				std::cout<<'*';
-			} else if (std::pair{r, c} == game.cursor()) {
+			} else if (game.cursor() == Minesweeper::position_type{c, r}) {
 				std::cout<<'@';
 			} else if (game.at(r, c) == CellState::OPENED) {
 				auto neighbours = game.neighbours(r, c);
