@@ -1,6 +1,8 @@
 #include <minesweeper>
 #include <random_helpers>
 
+#include <tonc.h> // TODO remove
+
 Minesweeper::Minesweeper(const size_t gridSize):
 	cells(gridSize, std::vector(gridSize, static_cast<cell_type>(CellState::CLOSED))),
 	mines(gridSize, std::vector(gridSize, false)) {}
@@ -16,8 +18,10 @@ size_t Minesweeper::rows() const {
 CellState Minesweeper::at(const size_t row, const size_t col) const {
 	if (row >= rows() || col >= columns())
 		return CellState::CLOSED;
-	if (cells[row][col] >= 0)
+	if (cells[row][col] >= 0) {
+		REG_BG0HOFS = cells[row][col]; // TODO remove
 		return CellState::OPENED;
+	}
 	return static_cast<CellState>(cells[row][col]);
 }
 
@@ -53,6 +57,22 @@ void Minesweeper::setCellOpenedCallback(cellopened_callback_type callback) {
 
 void Minesweeper::removeCellOpenedCallback() {
 	setCellOpenedCallback(nullptr);
+}
+
+// Move the cursor vertically; down if dir > 0, up if dir < 0, nothing if dir == 0
+void Minesweeper::movev(int dir) {
+	if (dir > 0)
+		down();
+	else if (dir < 0)
+		up();
+}
+
+// Same as movev but moves horizontally; to right if dir > 0
+void Minesweeper::moveh(int dir) {
+	if (dir > 0)
+		right();
+	else if (dir < 0)
+		left();
 }
 
 void Minesweeper::up() {
