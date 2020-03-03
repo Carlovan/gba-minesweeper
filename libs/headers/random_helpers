@@ -1,8 +1,27 @@
 #ifndef RANDOM_H_
 #define RANDOM_H_
 
-#include <random>
+#ifdef GBA
+
+#include <tonc.h>
+
+void initialize_random_system();
+
+class RandomSize {
+public:
+	RandomSize() {
+		sqran(REG_TM2D);
+	}
+
+	size_t operator()(const size_t maxVal) {
+		return qran_range(0, maxVal+1);
+	}
+};
+
+#else
+
 #include <ctime>
+#include <random>
 
 class RandomSize {
 private:
@@ -15,5 +34,7 @@ public:
 		return dis(generator);
 	}
 };
+
+#endif
 
 #endif
