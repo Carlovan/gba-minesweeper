@@ -1,7 +1,7 @@
 #include <backgrounds>
 #include <tonc.h>
 
-u16 bgEnableBit(int index) {
+u32 bgEnableBit(int index) {
 	return BIT(8+index);
 }
 
@@ -9,7 +9,7 @@ Background::Background(int index_, u16 priority, u16 cbb, u16 sbb, u16 bpp, u16 
 	index = index_;
 	REG_CNT = &REG_BGCNT[index];
 	*REG_CNT = BG_PRIO(priority) | BG_CBB(cbb) | BG_SBB(sbb) | bpp | size;
-	BIT_SET(REG_DISPCNT, DCNT_BG0);
+	BIT_SET(REG_DISPCNT, bgEnableBit(index));
 }
 
 Background::~Background() {

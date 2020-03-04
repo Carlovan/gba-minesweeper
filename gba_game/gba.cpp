@@ -6,7 +6,7 @@
 #include <minesweeper>
 #include "game_drawer.h"
 
-#include <background.h> // graphics
+#include <gfx.h> // graphics
 
 const int GRID_SIZE = 8;
 
@@ -16,7 +16,7 @@ void init_gba() {
 	irq_add(II_VBLANK, NULL);
 
 	// All 4 regular backgrounds
-	REG_DISPCNT= DCNT_MODE0;
+	REG_DISPCNT = DCNT_MODE0;
 
 	initialize_random_system();
 }
@@ -38,8 +38,8 @@ int main() {
 	GameDrawer drawer(game, bgBackground, bgSymbols);
 
 	// Init graphics
-	memcpy(pal_bg_mem, backgroundPal, backgroundPalLen);
-	memcpy(tile8_mem[3], backgroundTiles, backgroundTilesLen);
+	memcpy(pal_bg_mem, gfxPal, gfxPalLen);
+	memcpy(tile8_mem[3], gfxTiles, gfxTilesLen);
 
 	drawer.draw_all();
 
@@ -56,8 +56,10 @@ int main() {
 
 		game.moveh(key_hit_tri_horz());
 		game.movev(key_hit_tri_vert());
-		drawer.draw_all();
+		drawer.update_current();
 	}
+
+	drawer.draw_all(true);
 
 	while(1) {
 		VBlankIntrWait();

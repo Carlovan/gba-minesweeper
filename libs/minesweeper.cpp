@@ -40,6 +40,10 @@ size_t Minesweeper::neighbours(const size_t row, const size_t col) const {
 	return at(row, col) == CellState::OPENED ? cells[row][col] : 0;
 }
 
+size_t Minesweeper::neighbours(const position_type pos) const {
+	return neighbours(pos.row, pos.col);
+}
+
 bool Minesweeper::finished() const {
 	return lost || won();
 }

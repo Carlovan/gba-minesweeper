@@ -17,8 +17,8 @@ private:
 public:
 	GameDrawer(Minesweeper &game_, Background &bgBack_, Background &bgSymbols_);
 
-	void draw_all();
-	void update(const Minesweeper::position_type pos);
+	void draw_all(bool showMines = false);
+	void update(const Minesweeper::position_type pos, bool showMines = false);
 	void update_current();
 };
 #endif

@@ -55,6 +55,7 @@ public:
 	bool is_mine(const size_t row, const size_t col) const;
 	bool is_mine(const position_type pos) const;
 	size_t neighbours(const size_t row, const size_t col) const;
+	size_t neighbours(const position_type pos) const;
 
 	bool finished() const;
 	bool won() const;

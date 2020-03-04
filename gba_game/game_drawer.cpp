@@ -4,10 +4,18 @@
 
 enum class Tiles: SCR_ENTRY {
 	NONE        = 0,
-	FRAME       = 1,
-	CLOSED_CELL = 2,
-	OPENED_CELL = 3,
-	FLAGGED_CELL = 4,
+	GRASS       = 1,
+	FRAME,
+	CLOSED_CELL,
+	OPENED_CELL,
+	LAST_TILE_
+};
+
+enum class SymbolTiles: SCR_ENTRY {
+	NONE = 0,
+	FLAG = static_cast<SCR_ENTRY>(Tiles::LAST_TILE_),
+	MINE,
+	NUMBERS_BASE,
 };
 
 class DrawerCallback: public Minesweeper::cellopened_callback_type {
@@ -27,6 +35,7 @@ GameDrawer::GameDrawer(Minesweeper &game_, Background &bgBack_, Background &bgSy
   : game{game_}, bgBack{bgBack_}, bgSymbols{bgSymbols_},
 	upperLeft{(SCR_HT - game_.rows()) / 2, (SCR_WT - game_.columns()) / 2} {
 		game_.setCellOpenedCallback(std::make_unique<DrawerCallback>(*this));
+		se_fill(bgBack_.getSbb(), static_cast<SCR_ENTRY>(Tiles::GRASS));
 	}
 
 void GameDrawer::draw_frame() {
@@ -38,36 +47,45 @@ void GameDrawer::draw_frame() {
 		static_cast<SCR_ENTRY>(Tiles::FRAME));
 }
 
-void GameDrawer::draw_all() {
+void GameDrawer::draw_all(bool showMines) {
 	draw_frame();
 
 	for (size_t c = 0; c < game.columns(); c++) {
 		for (size_t r = 0; r < game.rows(); r++) {
-			update({r, c});
+			update({r, c}, showMines);
 		}
 	}
 }
 
-void GameDrawer::update(const Minesweeper::position_type pos) {
+void GameDrawer::update(const Minesweeper::position_type pos, bool showMines) {
 	auto tilePos = upperLeft + pos;
 	Tiles tileValue = Tiles::NONE;
+	SymbolTiles symbolValue = SymbolTiles::NONE;
+
 	if (game.at(pos) == CellState::OPENED) {
 		tileValue = Tiles::OPENED_CELL;
-	} else if (game.at(pos) == CellState::CLOSED) {
+	} else {
 		tileValue = Tiles::CLOSED_CELL;
-	} else if (game.at(pos) == CellState::OPENED) {
-		tileValue = Tiles::FLAGGED_CELL;
 	}
 
+	if (game.at(pos) == CellState::OPENED && game.neighbours(pos) > 0) {
+		symbolValue = SymbolTiles::NUMBERS_BASE;
+	}
+	if (game.at(pos) == CellState::FLAGGED) {
+		symbolValue = SymbolTiles::FLAG;
+	}
+	if (showMines && game.is_mine(pos)) {
+		symbolValue = SymbolTiles::MINE;
+	}
 
-	// TODO following is for debug
-	if (game.is_mine(pos)) {
-		tileValue = Tiles::FRAME;
+	SCR_ENTRY backgroundEntry = static_cast<SCR_ENTRY>(tileValue);
+	se_plot(bgBack.getSbb(), tilePos.col, tilePos.row, backgroundEntry);
+
+	SCR_ENTRY symbolEntry = static_cast<SCR_ENTRY>(symbolValue);
+	if (symbolValue == SymbolTiles::NUMBERS_BASE) {
+		symbolEntry += game.neighbours(pos);
 	}
-	if (game.cursor() == pos) {
-		tileValue = Tiles::NONE;
-	}
-	se_plot(bgBack.getSbb(), tilePos.col, tilePos.row, static_cast<SCR_ENTRY>(tileValue));
+	se_plot(bgSymbols.getSbb(), tilePos.col, tilePos.row, symbolEntry);
 }
 
 void GameDrawer::update_current() {
