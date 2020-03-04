@@ -12,13 +12,13 @@ enum class CellState {
 };
 
 struct Position {
-		size_t row, col;
-		Position operator+(const Position &other) const {
-			return {row + other.row, col + other.col};
-		}
-		bool operator==(const Position &other) const {
-			return row == other.row && col == other.col;
-		}
+	size_t row, col;
+	Position operator+(const Position &other) const {
+		return {row + other.row, col + other.col};
+	}
+	bool operator==(const Position &other) const {
+		return row == other.row && col == other.col;
+	}
 };
 
 struct Callback;
