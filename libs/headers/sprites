@@ -1,0 +1,13 @@
+#ifndef SPRITES_H
+#define SPRITES_H
+
+class Sprite {
+private:
+	const int index;
+public:
+	Sprite(int index_, u16 bpp_, u16 shape_, u16 size_, u16 tileIndex_, u16 priority_);
+
+	void setPosition(size_t x, size_t y);
+};
+
+#endif

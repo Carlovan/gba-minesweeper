@@ -16,7 +16,7 @@ void init_gba() {
 	irq_add(II_VBLANK, NULL);
 
 	// All 4 regular backgrounds
-	REG_DISPCNT = DCNT_MODE0;
+	REG_DISPCNT = DCNT_MODE0 | DCNT_OBJ | DCNT_OBJ_1D;
 
 	initialize_random_system();
 }
@@ -35,7 +35,8 @@ int main() {
 	Minesweeper game(GRID_SIZE);
 	Background bgBackground = Background::create(0, 3, 3, 0, BgBitDepht::BPP8, BgSize::REG_32x32).value();
 	Background bgSymbols    = Background::create(1, 2, 3, 1, BgBitDepht::BPP8, BgSize::REG_32x32).value();
-	GameDrawer drawer(game, bgBackground, bgSymbols);
+	Sprite     sprCursor;
+	GameDrawer drawer(game, bgBackground, bgSymbols, sprCursor);
 
 	// Init graphics
 	memcpy(pal_bg_mem, gfxPal, gfxPalLen);

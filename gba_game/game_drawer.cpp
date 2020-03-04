@@ -31,8 +31,8 @@ public:
 	}
 };
 
-GameDrawer::GameDrawer(Minesweeper &game_, Background &bgBack_, Background &bgSymbols_)
-  : game{game_}, bgBack{bgBack_}, bgSymbols{bgSymbols_},
+GameDrawer::GameDrawer(Minesweeper &game_, Background &bgBack_, Background &bgSymbols_, Sprite &sprCursor_)
+  : game{game_}, bgBack{bgBack_}, bgSymbols{bgSymbols_}, sprCursor{sprCursor_},
 	upperLeft{(SCR_HT - game_.rows()) / 2, (SCR_WT - game_.columns()) / 2} {
 		game_.setCellOpenedCallback(std::make_unique<DrawerCallback>(*this));
 		se_fill(bgBack_.getSbb(), static_cast<SCR_ENTRY>(Tiles::GRASS));
@@ -90,4 +90,9 @@ void GameDrawer::update(const Minesweeper::position_type pos, bool showMines) {
 
 void GameDrawer::update_current() {
 	update(game.cursor());
+}
+
+void GameDrawer::update_cursor() {
+	auto [y, x] = (game.cursor() + upperLeft) * 8;
+	sprCursor.setPosition(x, y);
 }
