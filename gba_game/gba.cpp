@@ -2,6 +2,7 @@
 
 #include <tonc.h>
 #include <backgrounds>
+#include <random_helpers>
 #include <minesweeper>
 #include "game_drawer.h"
 
@@ -16,6 +17,16 @@ void init_gba() {
 
 	// All 4 regular backgrounds
 	REG_DISPCNT= DCNT_MODE0;
+
+	initialize_random_system();
+}
+
+int key_hit_tri_horz() {
+	return KEY_TRIBOOL(key_hit, KI_RIGHT, KI_LEFT);
+}
+
+int key_hit_tri_vert() {
+	return KEY_TRIBOOL(key_hit, KI_DOWN, KI_UP);
 }
 
 int main() {
@@ -36,15 +47,19 @@ int main() {
 		VBlankIntrWait();
 		key_poll();
 
-		// if (key_hit(KEY_B)) {
-		// 	game.toggle_flag();
-		// }
-		// if (key_hit(KEY_A)) {
-		// 	game.open();
-		// }
+		if (key_hit(KEY_B)) {
+			game.toggle_flag();
+		}
+		if (key_hit(KEY_A)) {
+			game.open();
+		}
 
-		// game.moveh(key_tri_horz());
-		// game.movev(key_tri_vert());
-		drawer.update_current();
+		game.moveh(key_hit_tri_horz());
+		game.movev(key_hit_tri_vert());
+		drawer.draw_all();
+	}
+
+	while(1) {
+		VBlankIntrWait();
 	}
 }

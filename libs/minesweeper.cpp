@@ -1,8 +1,6 @@
 #include <minesweeper>
 #include <random_helpers>
 
-#include <tonc.h> // TODO remove
-
 Minesweeper::Minesweeper(const size_t gridSize):
 	cells(gridSize, std::vector(gridSize, static_cast<cell_type>(CellState::CLOSED))),
 	mines(gridSize, std::vector(gridSize, false)) {}
@@ -19,20 +17,23 @@ CellState Minesweeper::at(const size_t row, const size_t col) const {
 	if (row >= rows() || col >= columns())
 		return CellState::CLOSED;
 	if (cells[row][col] >= 0) {
-		REG_BG0HOFS = cells[row][col]; // TODO remove
 		return CellState::OPENED;
 	}
 	return static_cast<CellState>(cells[row][col]);
 }
 
 CellState Minesweeper::at(const position_type pos) const {
-	return at(pos.y, pos.x);
+	return at(pos.row, pos.col);
 }
 
 bool Minesweeper::is_mine(const size_t row, const size_t col) const {
 	if (row >= rows() || col >= columns())
 		return false;
 	return mines[row][col];
+}
+
+bool Minesweeper::is_mine(const position_type pos) const {
+	return is_mine(pos.row, pos.col);
 }
 
 size_t Minesweeper::neighbours(const size_t row, const size_t col) const {
@@ -51,8 +52,8 @@ Minesweeper::position_type Minesweeper::cursor() const {
 	return cursorPosition;
 }
 
-void Minesweeper::setCellOpenedCallback(cellopened_callback_type callback) {
-	cellopenedCallback = callback;
+void Minesweeper::setCellOpenedCallback(cellopened_callback_type_ptr callback) {
+	cellopenedCallback = std::move(callback);
 }
 
 void Minesweeper::removeCellOpenedCallback() {
@@ -76,28 +77,28 @@ void Minesweeper::moveh(int dir) {
 }
 
 void Minesweeper::up() {
-	if (cursorPosition.y > 0)
-		cursorPosition.y--;
+	if (cursorPosition.row > 0)
+		cursorPosition.row--;
 }
 
 void Minesweeper::right() {
-	if (cursorPosition.x < columns()-1)
-		cursorPosition.x++;
+	if (cursorPosition.col < columns()-1)
+		cursorPosition.col++;
 }
 
 void Minesweeper::down() {
-	if (cursorPosition.y < rows()-1)
-		cursorPosition.y++;
+	if (cursorPosition.row < rows()-1)
+		cursorPosition.row++;
 }
 
 void Minesweeper::left() {
-	if (cursorPosition.x > 0)
-		cursorPosition.x--;
+	if (cursorPosition.col > 0)
+		cursorPosition.col--;
 }
 
 void Minesweeper::toggle_flag() {
 	if (at(cursor()) != CellState::OPENED) {
-		cells[cursor().y][cursor().x] = static_cast<cell_type>(at(cursor()) == CellState::CLOSED ? CellState::FLAGGED : CellState::CLOSED);
+		cells[cursor().row][cursor().col] = static_cast<cell_type>(at(cursor()) == CellState::CLOSED ? CellState::FLAGGED : CellState::CLOSED);
 	}
 }
 
@@ -116,8 +117,8 @@ size_t Minesweeper::count_neighbours(const position_type pos) const {
 	size_t count = 0;
 	for(int v = -1; v <= 1; v++) {
 		for(int h = -1; h <= 1; h++) {
-			size_t r = pos.y + v;
-			size_t c = pos.x + h;
+			size_t r = pos.row + v;
+			size_t c = pos.col + h;
 			if (r < rows() && c < columns()) {
 				count += mines[r][c];
 			}
@@ -127,19 +128,19 @@ size_t Minesweeper::count_neighbours(const position_type pos) const {
 }
 
 void Minesweeper::open_cell(const position_type pos) {
-	if (mines[pos.y][pos.x]) {
+	if (mines[pos.row][pos.col]) {
 		lost = true;
 	} else if (at(pos) != CellState::OPENED) {
 		const auto minesNear = count_neighbours(pos);
-		cells[pos.y][pos.x] = minesNear;
+		cells[pos.row][pos.col] = minesNear;
 		openedCells++;
-		if (cellopenedCallback != nullptr) cellopenedCallback(*this, pos.y, pos.x);
+		if (cellopenedCallback != nullptr) (*cellopenedCallback)(*this, pos);
 		// If there are no mines near me open the neighbours
 		if (minesNear == 0) {
 			for (int v = -1; v <= 1; v++) {
 				for(int h = -1; h <= 1; h++) {
-					size_t r = pos.y + v;
-					size_t c = pos.x + h;
+					size_t r = pos.row + v;
+					size_t c = pos.col + h;
 					if ((h != 0 || v != 0) && r < rows() && c < columns()) {
 						open_cell({r, c});
 					}
@@ -154,11 +155,11 @@ void Minesweeper::initialize_mines() {
 
 	RandomSize random;
 	for(size_t i = 0; i < minesCount; i++) {
-		size_t row, col;
+		position_type pos;
 		do {
-			row = random(rows()-1);
-			col = random(columns()-1);
-		} while(mines[row][col]);
-		mines[row][col] = true;
+			pos.row = random(rows()-1);
+			pos.col = random(columns()-1);
+		} while(mines[pos.row][pos.col] || cursor() == pos);
+		mines[pos.row][pos.col] = true;
 	}
 }

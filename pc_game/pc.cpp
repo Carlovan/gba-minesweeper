@@ -39,7 +39,7 @@ void draw_grid(const Minesweeper &game) {
 		for(size_t c = 0; c < game.columns(); c++) {
 			if (game.finished() && game.is_mine(r, c)) {
 				std::cout<<'*';
-			} else if (game.cursor() == Minesweeper::position_type{c, r}) {
+			} else if (game.cursor() == Minesweeper::position_type{r, c}) {
 				std::cout<<'@';
 			} else if (game.at(r, c) == CellState::OPENED) {
 				auto neighbours = game.neighbours(r, c);
@@ -67,14 +67,16 @@ void sleep_msecs(unsigned int ms) {
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 
-void cell_opened_callback(const Minesweeper &game, size_t row, size_t col) {
-	draw_grid(game);
-	sleep_msecs(50);
-}
+struct CallbackT: public Minesweeper::cellopened_callback_type {
+	void operator()(const Minesweeper &game, const Minesweeper::position_type pos) override {
+		draw_grid(game);
+		sleep_msecs(50);
+	}
+};
 
 int main() {
 	Minesweeper game(GRID_SIZE);
-	game.setCellOpenedCallback(cell_opened_callback);
+	game.setCellOpenedCallback(std::make_unique<CallbackT>());
 
 	std::cout<<START_MSG;
 

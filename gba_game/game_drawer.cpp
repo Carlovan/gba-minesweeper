@@ -10,23 +10,31 @@ enum class Tiles: SCR_ENTRY {
 	FLAGGED_CELL = 4,
 };
 
-void GameDrawer::cell_opened_callback(const Minesweeper &game, size_t row, size_t col) {
+class DrawerCallback: public Minesweeper::cellopened_callback_type {
+private:
+	GameDrawer &drawer;
 
-}
+public:
+	DrawerCallback(GameDrawer &drawer_): drawer{drawer_} {}
 
+	void operator()(const Minesweeper &game, const Minesweeper::position_type pos) override {
+		VBlankIntrDelay(5);
+		drawer.update(pos);
+	}
+};
 
 GameDrawer::GameDrawer(Minesweeper &game_, Background &bgBack_, Background &bgSymbols_)
   : game{game_}, bgBack{bgBack_}, bgSymbols{bgSymbols_},
-	upperLeft{(SCR_WT - game_.columns()) / 2, (SCR_HT - game_.rows()) / 2} {
-		game_.setCellOpenedCallback(std::bind(&GameDrawer::cell_opened_callback, *this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+	upperLeft{(SCR_HT - game_.rows()) / 2, (SCR_WT - game_.columns()) / 2} {
+		game_.setCellOpenedCallback(std::make_unique<DrawerCallback>(*this));
 	}
 
 void GameDrawer::draw_frame() {
 	se_frame(bgBack.getSbb(),
-		upperLeft.x - 1,
-		upperLeft.y - 1,
-		upperLeft.x + game.columns() + 1,
-		upperLeft.y + game.rows()    + 1,
+		upperLeft.col - 1,
+		upperLeft.row - 1,
+		upperLeft.col + game.columns() + 1,
+		upperLeft.row + game.rows()    + 1,
 		static_cast<SCR_ENTRY>(Tiles::FRAME));
 }
 
@@ -50,7 +58,16 @@ void GameDrawer::update(const Minesweeper::position_type pos) {
 	} else if (game.at(pos) == CellState::OPENED) {
 		tileValue = Tiles::FLAGGED_CELL;
 	}
-	se_plot(bgBack.getSbb(), tilePos.x, tilePos.y, static_cast<SCR_ENTRY>(tileValue));
+
+
+	// TODO following is for debug
+	if (game.is_mine(pos)) {
+		tileValue = Tiles::FRAME;
+	}
+	if (game.cursor() == pos) {
+		tileValue = Tiles::NONE;
+	}
+	se_plot(bgBack.getSbb(), tilePos.col, tilePos.row, static_cast<SCR_ENTRY>(tileValue));
 }
 
 void GameDrawer::update_current() {
