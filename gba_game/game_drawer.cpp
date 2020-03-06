@@ -94,5 +94,5 @@ void GameDrawer::update_current() {
 
 void GameDrawer::update_cursor() {
 	auto [y, x] = (game.cursor() + upperLeft) * 8;
-	sprCursor.setPosition(x, y);
+	sprCursor.position(x, y);
 }

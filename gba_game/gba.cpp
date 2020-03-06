@@ -16,7 +16,7 @@ void init_gba() {
 	irq_add(II_VBLANK, NULL);
 
 	// All 4 regular backgrounds
-	REG_DISPCNT = DCNT_MODE0 | DCNT_OBJ | DCNT_OBJ_1D;
+	REG_DISPCNT = DCNT_MODE0;
 
 	initialize_random_system();
 }

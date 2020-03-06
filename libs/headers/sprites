@@ -1,13 +1,60 @@
 #ifndef SPRITES_H
 #define SPRITES_H
 
+#include <vector>
+#include <optional>
+
+#include <tonc.h>
+
+const int SPRITES_COUNT = 128;
+
+// Order matters, used to calculate shape and size attributes
+enum class SprSize {
+	S8x8,  S16x16, S32x32, S64x64,
+	S16x8, S32x8,  S32x16, S64x32,
+	S8x16, S8x32,  S16x32, S32x64,
+};
+
+enum class SprBitDepht: u16 {
+	BPP4 = ATTR0_4BPP,
+	BPP8 = ATTR0_8BPP,
+};
+
+void initialize_sprites();
+
 class Sprite {
 private:
-	const int index;
-public:
-	Sprite(int index_, u16 bpp_, u16 shape_, u16 size_, u16 tileIndex_, u16 priority_);
+	static std::vector<bool> used; // To know which sprites are free
+	int index;
+	Sprite(int index_, u16 priority_, u16 bpp_, u16 shape_, u16 size_, u16 tileIndex_);
 
-	void setPosition(size_t x, size_t y);
+	OBJ_ATTR& get_object_data();
+	OBJ_ATTR get_object_data() const;
+
+public:
+	// Copy constructor/assignement
+	Sprite(const Sprite &other) = delete;
+	Sprite& operator=(const Sprite &other) = delete;
+
+	// Move constructor/assignement
+	Sprite(Sprite &&other);
+	Sprite& operator=(Sprite &&other);
+
+	// Checks validity of the parameters and builds the Sprite object
+	static std::optional<Sprite> create(int index, int priority, SprBitDepht bpp, SprSize size, int tileIndex);
+
+	~Sprite();
+
+	// Getters
+	int x() const;
+	int y() const;
+	bool hidden() const;
+
+	// Setters
+	void position(int x, int y);
+	void x(int val);
+	void y(int val);
+	void hidden(bool hide);
 };
 
 #endif
