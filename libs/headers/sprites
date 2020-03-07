@@ -49,12 +49,14 @@ public:
 	int x() const;
 	int y() const;
 	bool hidden() const;
+	int tileIndex() const;
 
 	// Setters
 	void position(int x, int y);
 	void x(int val);
 	void y(int val);
 	void hidden(bool hide);
+	void tileIndex(int val);
 };
 
 #endif

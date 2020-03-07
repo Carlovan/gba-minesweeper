@@ -68,6 +68,10 @@ bool Sprite::hidden() const {
 	return (get_object_data().attr0 & ATTR0_MODE_MASK) == 2;
 }
 
+int Sprite::tileIndex() const {
+	return get_object_data().attr2 & ATTR2_ID_MASK;
+}
+
 void Sprite::position(int x, int y) {
 	obj_set_pos(&get_object_data(), x, y);
 }
@@ -83,4 +87,9 @@ void Sprite::y(int val) {
 void Sprite::hidden(bool hide) {
 	BIT_CLEAR(get_object_data().attr0, ATTR0_MODE_MASK);
 	BIT_SET(get_object_data().attr0, hide ? ATTR0_MODE(2) : 0);
+}
+
+void Sprite::tileIndex(int val) {
+	BIT_CLEAR(get_object_data().attr2, ATTR2_ID_MASK);
+	BIT_SET(get_object_data().attr2, val & ATTR2_ID_MASK);
 }

@@ -3,6 +3,7 @@
 #include <tonc.h>
 #include <backgrounds>
 #include <sprites>
+#include <animators>
 #include <random_helpers>
 #include <minesweeper>
 #include "game_drawer.h"
@@ -41,6 +42,8 @@ int main() {
 	Sprite     sprCursor    = Sprite::create(0, 2, SprBitDepht::BPP8, SprSize::S16x16, 0).value();
 	GameDrawer drawer(game, bgBackground, bgSymbols, sprCursor);
 
+	SpriteBlinker cursorBlinker(sprCursor, 50, 0, 4);
+
 	// Init graphics
 	memcpy(pal_bg_mem, gfxPal, gfxPalLen);
 	memcpy(tile8_mem[3], gfxTiles, gfxTilesLen);
@@ -65,6 +68,7 @@ int main() {
 		game.movev(key_hit_tri_vert());
 		drawer.update_current();
 		drawer.update_cursor();
+		cursorBlinker.animate();
 	}
 
 	drawer.draw_all(true);

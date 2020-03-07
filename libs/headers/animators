@@ -1,0 +1,35 @@
+#ifndef ANIMATORS_H
+#define ANIMATORS_H
+
+#include <sprites>
+
+class SpriteAnimator {
+protected:
+	Sprite &sprite;
+
+public:
+	SpriteAnimator(Sprite& sprite_): sprite{sprite_} {}
+
+	virtual void animate() = 0;
+};
+
+// Blinks between two different tile indexes every 'delay' frames
+class SpriteBlinker: public SpriteAnimator {
+private:
+	int delay;
+	int counter = 0;
+	int frame1, frame2;
+public:
+	SpriteBlinker(Sprite& sprite_, int delay_, int frame1_, int frame2_):
+		SpriteAnimator(sprite_), delay{delay_}, frame1{frame1_}, frame2{frame2_} {}
+
+	void animate() override {
+		counter++;
+		if (counter == delay) {
+			counter = 0;
+			sprite.tileIndex(sprite.tileIndex() == frame1 ? frame2 : frame1); // Swap frame
+		}
+	}
+};
+
+#endif
