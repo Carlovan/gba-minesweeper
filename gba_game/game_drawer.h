@@ -12,6 +12,7 @@ private:
 	Background &bgSymbols;
 	Sprite     &sprCursor;
 	const Minesweeper::position_type upperLeft;
+	const Minesweeper::position_type cursorOffset{-4, -4};
 
 	void draw_frame();
 	void cell_opened_callback(const Minesweeper &game, size_t row, size_t col);

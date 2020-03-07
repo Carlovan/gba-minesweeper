@@ -50,8 +50,8 @@ void GameDrawer::draw_frame() {
 void GameDrawer::draw_all(bool showMines) {
 	draw_frame();
 
-	for (size_t c = 0; c < game.columns(); c++) {
-		for (size_t r = 0; r < game.rows(); r++) {
+	for (int c = 0; c < game.columns(); c++) {
+		for (int r = 0; r < game.rows(); r++) {
 			update({r, c}, showMines);
 		}
 	}
@@ -95,6 +95,6 @@ void GameDrawer::update_current() {
 }
 
 void GameDrawer::update_cursor() {
-	auto [y, x] = (game.cursor() + upperLeft) * 8;
+	auto [y, x] = (game.cursor() + upperLeft) * 8 + cursorOffset;
 	sprCursor.position(x, y);
 }

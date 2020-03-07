@@ -38,7 +38,7 @@ int main() {
 	Minesweeper game(GRID_SIZE);
 	Background bgBackground = Background::create(0, 3, 3, 0, BgBitDepht::BPP8, BgSize::REG_32x32).value();
 	Background bgSymbols    = Background::create(1, 2, 3, 1, BgBitDepht::BPP8, BgSize::REG_32x32).value();
-	Sprite     sprCursor    = Sprite::create(0, 2, SprBitDepht::BPP8, SprSize::S8x8, 0).value();
+	Sprite     sprCursor    = Sprite::create(0, 2, SprBitDepht::BPP8, SprSize::S16x16, 0).value();
 	GameDrawer drawer(game, bgBackground, bgSymbols, sprCursor);
 
 	// Init graphics
@@ -48,7 +48,6 @@ int main() {
 	memcpy(pal_obj_mem, cursorPal, cursorPalLen);
 	memcpy(tile8_mem[4], cursorTiles, cursorTilesLen);
 
-	// sprCursor.hidden(false);
 	drawer.draw_all();
 
 	while(!game.finished()) {
