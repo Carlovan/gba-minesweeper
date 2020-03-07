@@ -26,7 +26,7 @@ public:
 	DrawerCallback(GameDrawer &drawer_): drawer{drawer_} {}
 
 	void operator()(const Minesweeper &game, const Minesweeper::position_type pos) override {
-		VBlankIntrDelay(5);
+		VBlankIntrDelay(2);
 		drawer.update(pos);
 	}
 };
