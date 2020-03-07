@@ -1,19 +1,19 @@
 #include <minesweeper>
 #include <random_helpers>
 
-Minesweeper::Minesweeper(const size_t gridSize):
+Minesweeper::Minesweeper(const int gridSize):
 	cells(gridSize, std::vector(gridSize, static_cast<cell_type>(CellState::CLOSED))),
 	mines(gridSize, std::vector(gridSize, false)) {}
 
-size_t Minesweeper::columns() const {
+int Minesweeper::columns() const {
 	return cells.size() > 0 ? cells[0].size() : 0;
 }
 
-size_t Minesweeper::rows() const {
+int Minesweeper::rows() const {
 	return cells.size();
 }
 
-CellState Minesweeper::at(const size_t row, const size_t col) const {
+CellState Minesweeper::at(const int row, const int col) const {
 	if (row >= rows() || col >= columns())
 		return CellState::CLOSED;
 	if (cells[row][col] >= 0) {
@@ -26,7 +26,7 @@ CellState Minesweeper::at(const position_type pos) const {
 	return at(pos.row, pos.col);
 }
 
-bool Minesweeper::is_mine(const size_t row, const size_t col) const {
+bool Minesweeper::is_mine(const int row, const int col) const {
 	if (row >= rows() || col >= columns())
 		return false;
 	return mines[row][col];
@@ -36,11 +36,11 @@ bool Minesweeper::is_mine(const position_type pos) const {
 	return is_mine(pos.row, pos.col);
 }
 
-size_t Minesweeper::neighbours(const size_t row, const size_t col) const {
+int Minesweeper::neighbours(const int row, const int col) const {
 	return at(row, col) == CellState::OPENED ? cells[row][col] : 0;
 }
 
-size_t Minesweeper::neighbours(const position_type pos) const {
+int Minesweeper::neighbours(const position_type pos) const {
 	return neighbours(pos.row, pos.col);
 }
 
@@ -117,13 +117,13 @@ void Minesweeper::open() {
 }
 
 // Also counts the given position
-size_t Minesweeper::count_neighbours(const position_type pos) const {
-	size_t count = 0;
+int Minesweeper::count_neighbours(const position_type pos) const {
+	int count = 0;
 	for(int v = -1; v <= 1; v++) {
 		for(int h = -1; h <= 1; h++) {
-			size_t r = pos.row + v;
-			size_t c = pos.col + h;
-			if (r < rows() && c < columns()) {
+			int r = pos.row + v;
+			int c = pos.col + h;
+			if (r >= 0 && c >= 0 && r < rows() && c < columns()) {
 				count += mines[r][c];
 			}
 		}
@@ -143,9 +143,9 @@ void Minesweeper::open_cell(const position_type pos) {
 		if (minesNear == 0) {
 			for (int v = -1; v <= 1; v++) {
 				for(int h = -1; h <= 1; h++) {
-					size_t r = pos.row + v;
-					size_t c = pos.col + h;
-					if ((h != 0 || v != 0) && r < rows() && c < columns()) {
+					int r = pos.row + v;
+					int c = pos.col + h;
+					if ((h != 0 || v != 0) && r >= 0 && c >= 0 && r < rows() && c < columns()) {
 						open_cell({r, c});
 					}
 				}
@@ -158,7 +158,7 @@ void Minesweeper::initialize_mines() {
 	minesCount = rows() * columns() / 8;
 
 	RandomSize random;
-	for(size_t i = 0; i < minesCount; i++) {
+	for(int i = 0; i < minesCount; i++) {
 		position_type pos;
 		do {
 			pos.row = random(rows()-1);

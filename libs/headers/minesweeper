@@ -12,11 +12,11 @@ enum class CellState {
 };
 
 struct Position {
-	size_t row, col;
+	int row, col;
 	Position operator+(const Position &other) const {
 		return {row + other.row, col + other.col};
 	}
-	Position operator*(const size_t value) const {
+	Position operator*(const int value) const {
 		return {row * value, col * value};
 	}
 	bool operator==(const Position &other) const {
@@ -37,28 +37,28 @@ private:
 	std::vector<std::vector<bool>> mines;
 	position_type cursorPosition{0,0};
 
-	size_t minesCount;
+	int minesCount;
 	bool lost = false;
-	size_t openedCells = 0;
+	int openedCells = 0;
 	bool initialized = false;
 	cellopened_callback_type_ptr cellopenedCallback = nullptr;
 
 	void open_cell(const position_type pos);
 	void initialize_mines();
-	size_t count_neighbours(const position_type pos) const;
+	int count_neighbours(const position_type pos) const;
 
 public:
-	Minesweeper(const size_t gridSize);
+	Minesweeper(const int gridSize);
 
-	size_t columns() const;
-	size_t rows() const;
+	int columns() const;
+	int rows() const;
 
-	CellState at(const size_t row, const size_t col) const;
+	CellState at(const int row, const int col) const;
 	CellState at(const position_type pos) const;
-	bool is_mine(const size_t row, const size_t col) const;
+	bool is_mine(const int row, const int col) const;
 	bool is_mine(const position_type pos) const;
-	size_t neighbours(const size_t row, const size_t col) const;
-	size_t neighbours(const position_type pos) const;
+	int neighbours(const int row, const int col) const;
+	int neighbours(const position_type pos) const;
 
 	bool finished() const;
 	bool won() const;
