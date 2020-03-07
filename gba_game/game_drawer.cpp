@@ -55,6 +55,8 @@ void GameDrawer::draw_all(bool showMines) {
 			update({r, c}, showMines);
 		}
 	}
+
+	update_cursor();
 }
 
 void GameDrawer::update(const Minesweeper::position_type pos, bool showMines) {
