@@ -27,7 +27,7 @@ Now you can just run the game with yout favourite emulator!
 * **A** key to open the cell under the cursor
 * **B** to add/remove the flag from the cell under the cursor
 
-After finishing the game the position of the mines will be showed. To restart you need to reset the cartridge.
+After finishing the game the position of the mines will be showed. To restart you just need to press **A**.
 
 # PC version
 

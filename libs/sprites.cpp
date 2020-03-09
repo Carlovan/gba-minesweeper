@@ -18,7 +18,7 @@ OBJ_ATTR Sprite::get_object_data() const {
 Sprite::Sprite(int index_, u16 priority_, u16 bpp_, u16 shape_, u16 size_, u16 tileIndex_) {
 	index = index_;
 	auto& objData = get_object_data();
-	objData.attr0 = ATTR0_BUILD(0, shape_, bpp_, 0, 0, 0, 0);
+	objData.attr0 = ATTR0_BUILD(0, shape_, bpp_, 2, 0, 0, 0);
 	objData.attr1 = ATTR1_BUILDR(0, size_, 0, 0);
 	objData.attr2 = ATTR2_BUILD(tileIndex_, 0, priority_);
 	used[index] = 1;

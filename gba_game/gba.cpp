@@ -33,9 +33,7 @@ int key_hit_tri_vert() {
 	return KEY_TRIBOOL(key_hit, KI_DOWN, KI_UP);
 }
 
-int main() {
-	init_gba();
-
+void play() {
 	Minesweeper game(GRID_SIZE);
 	Background bgBackground = Background::create(0, 3, 3, 0, BgBitDepht::BPP8, BgSize::REG_32x32).value();
 	Background bgSymbols    = Background::create(1, 2, 3, 1, BgBitDepht::BPP8, BgSize::REG_32x32).value();
@@ -52,6 +50,7 @@ int main() {
 	memcpy(tile8_mem[4], cursorTiles, cursorTilesLen);
 
 	drawer.draw_all();
+	sprCursor.hidden(false);
 
 	while(!game.finished()) {
 		VBlankIntrWait();
@@ -73,7 +72,14 @@ int main() {
 
 	drawer.draw_all(true);
 
+	key_wait_till_hit(KEY_A);
+	VBlankIntrWait();
+}
+
+int main() {
+	init_gba();
+
 	while(1) {
-		VBlankIntrWait();
+		play();
 	}
 }
