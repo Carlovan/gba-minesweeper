@@ -1,2 +1,4 @@
-* Add a Makefile
-* Write GBA frontend
+* Reset game after finishing
+* Show a message at the end of the game
+* Starting menu to choose grid size
+* Grid size bigger than the screen (scrolling)
