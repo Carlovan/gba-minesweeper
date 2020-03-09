@@ -8,7 +8,7 @@ You need the [devkitPro](https://devkitpro.org/) toolchain to compile, and other
 
 ### Linux
 
-You just need to install `devkitPro` and `make`. For the first follow [this wiki page](https://devkitpro.org/wiki/devkitPro_pacman), for the latter just use your package manager.
+You just need to install **devkitPro** and `make`. For the first follow [this wiki page](https://devkitpro.org/wiki/devkitPro_pacman) and install the `gba-dev` group, for the latter just use your package manager.
 
 ### Windows
 
