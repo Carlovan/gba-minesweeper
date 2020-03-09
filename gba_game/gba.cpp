@@ -11,7 +11,7 @@
 #include <gfx.h> // graphics
 #include <cursor.h> // Cursor sprite
 
-const int GRID_SIZE = 8;
+const int GRID_SIZE = 16;
 
 void init_gba() {
 	// Initialize interrupts
@@ -33,21 +33,12 @@ int key_hit_tri_vert() {
 	return KEY_TRIBOOL(key_hit, KI_DOWN, KI_UP);
 }
 
-void play() {
+void play(Background &bgBackground, Background &bgSymbols, Sprite &sprCursor) {
+	VBlankIntrWait();
 	Minesweeper game(GRID_SIZE);
-	Background bgBackground = Background::create(0, 3, 3, 0, BgBitDepht::BPP8, BgSize::REG_32x32).value();
-	Background bgSymbols    = Background::create(1, 2, 3, 1, BgBitDepht::BPP8, BgSize::REG_32x32).value();
-	Sprite     sprCursor    = Sprite::create(0, 2, SprBitDepht::BPP8, SprSize::S16x16, 0).value();
 	GameDrawer drawer(game, bgBackground, bgSymbols, sprCursor);
 
 	SpriteBlinker cursorBlinker(sprCursor, 50, 0, 4);
-
-	// Init graphics
-	memcpy(pal_bg_mem, gfxPal, gfxPalLen);
-	memcpy(tile8_mem[3], gfxTiles, gfxTilesLen);
-
-	memcpy(pal_obj_mem, cursorPal, cursorPalLen);
-	memcpy(tile8_mem[4], cursorTiles, cursorTilesLen);
 
 	drawer.draw_all();
 	sprCursor.hidden(false);
@@ -73,13 +64,23 @@ void play() {
 	drawer.draw_all(true);
 
 	key_wait_till_hit(KEY_A);
-	VBlankIntrWait();
 }
 
 int main() {
 	init_gba();
 
+	Background bgBackground = Background::create(0, 3, 3, 0, BgBitDepht::BPP8, BgSize::REG_32x32).value();
+	Background bgSymbols    = Background::create(1, 2, 3, 1, BgBitDepht::BPP8, BgSize::REG_32x32).value();
+	Sprite     sprCursor    = Sprite::create(0, 2, SprBitDepht::BPP8, SprSize::S16x16, 0).value();
+
+	// Init graphics
+	memcpy(pal_bg_mem, gfxPal, gfxPalLen);
+	memcpy(tile8_mem[3], gfxTiles, gfxTilesLen);
+
+	memcpy(pal_obj_mem, cursorPal, cursorPalLen);
+	memcpy(tile8_mem[4], cursorTiles, cursorTilesLen);
+
 	while(1) {
-		play();
+		play(bgBackground, bgSymbols, sprCursor);
 	}
 }
