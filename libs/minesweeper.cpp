@@ -1,3 +1,5 @@
+#include <queue>
+
 #include <minesweeper>
 #include <random_helpers>
 
@@ -131,22 +133,30 @@ int Minesweeper::count_neighbours(const position_type pos) const {
 	return count;
 }
 
-void Minesweeper::open_cell(const position_type pos) {
-	if (mines[pos.row][pos.col]) {
+void Minesweeper::open_cell(const position_type start) {
+	if (mines[start.row][start.col]) {
 		lost = true;
-	} else if (at(pos) != CellState::OPENED) {
-		const auto minesNear = count_neighbours(pos);
-		cells[pos.row][pos.col] = minesNear;
-		openedCells++;
-		if (cellopenedCallback != nullptr) (*cellopenedCallback)(*this, pos);
-		// If there are no mines near me open the neighbours
-		if (minesNear == 0) {
-			for (int v = -1; v <= 1; v++) {
-				for(int h = -1; h <= 1; h++) {
-					int r = pos.row + v;
-					int c = pos.col + h;
-					if ((h != 0 || v != 0) && r >= 0 && c >= 0 && r < rows() && c < columns()) {
-						open_cell({r, c});
+	} else {
+		std::queue<position_type> toOpen; // Cells to be opened
+		toOpen.push(start);
+		while(!toOpen.empty()) {
+			auto curr = toOpen.front();
+			toOpen.pop();
+			if (at(curr) == CellState::OPENED)
+				continue;
+			const auto minesNear = count_neighbours(curr);
+			cells[curr.row][curr.col] = minesNear;
+			openedCells++;
+			if (cellopenedCallback != nullptr) (*cellopenedCallback)(*this, curr);
+			// If there are no mines near me open the neighbours
+			if (minesNear == 0) {
+				for (int v = -1; v <= 1; v++) {
+					for(int h = -1; h <= 1; h++) {
+						int r = curr.row + v;
+						int c = curr.col + h;
+						if ((h != 0 || v != 0) && r >= 0 && c >= 0 && r < rows() && c < columns() && at(r, c) != CellState::OPENED) {
+							toOpen.push({r, c});
+						}
 					}
 				}
 			}
