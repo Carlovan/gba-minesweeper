@@ -1,4 +1,3 @@
 * Show a message at the end of the game
-* Keep moving cursor while button pressed
 * Starting menu to choose grid size
 * Grid size bigger than the screen (scrolling)

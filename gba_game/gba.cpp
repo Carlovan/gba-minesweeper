@@ -23,14 +23,17 @@ void init_gba() {
 
 	initialize_random_system();
 	initialize_sprites();
+
+	key_repeat_limits(20, 7);
+	key_repeat_mask(KEY_RIGHT | KEY_LEFT | KEY_DOWN | KEY_UP);
 }
 
-int key_hit_tri_horz() {
-	return KEY_TRIBOOL(key_hit, KI_RIGHT, KI_LEFT);
+int key_rpt_tri_horz() {
+	return KEY_TRIBOOL(key_repeat, KI_RIGHT, KI_LEFT);
 }
 
-int key_hit_tri_vert() {
-	return KEY_TRIBOOL(key_hit, KI_DOWN, KI_UP);
+int key_rpt_tri_vert() {
+	return KEY_TRIBOOL(key_repeat, KI_DOWN, KI_UP);
 }
 
 void play(Background &bgBackground, Background &bgSymbols, Sprite &sprCursor) {
@@ -54,8 +57,8 @@ void play(Background &bgBackground, Background &bgSymbols, Sprite &sprCursor) {
 			game.open();
 		}
 
-		game.moveh(key_hit_tri_horz());
-		game.movev(key_hit_tri_vert());
+		game.moveh(key_rpt_tri_horz());
+		game.movev(key_rpt_tri_vert());
 		drawer.update_current();
 		drawer.update_cursor();
 		cursorBlinker.animate();
