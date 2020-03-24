@@ -22,6 +22,10 @@ public:
 		Background &bgBack_, Background &bgSymbols_,
 		Sprite &sprCursor_);
 
+	void operator=(const GameDrawer &other) = delete;
+
+	~GameDrawer();
+
 	void draw_all(bool showMines = false);
 	void update(const Minesweeper::position_type pos, bool showMines = false);
 	void update_current();

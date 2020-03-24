@@ -11,6 +11,7 @@ enum class TilesIndexes: SCR_ENTRY {
 	MINE,
 	NUMBERS_BASE,
 	TIMES = static_cast<SCR_ENTRY>(NUMBERS_BASE) + 10,
+	RIGHT_ARROW,
 };
 
 #endif

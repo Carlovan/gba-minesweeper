@@ -23,6 +23,10 @@ GameDrawer::GameDrawer(Minesweeper &game_, Background &bgBack_, Background &bgSy
 		se_fill(bgBack_.getSbb(), static_cast<SCR_ENTRY>(TilesIndexes::GRASS));
 	}
 
+GameDrawer::~GameDrawer() {
+	sprCursor.hidden(true);
+}
+
 void GameDrawer::draw_frame() {
 	se_frame(bgBack.getSbb(),
 		upperLeft.col - 1,

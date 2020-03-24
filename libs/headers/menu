@@ -1,0 +1,31 @@
+#ifndef MENU_H
+#define MENU_H
+
+#include <vector>
+#include <tonc.h>
+
+#include <backgrounds>
+
+struct MenuTileSet {
+	SCR_ENTRY background;
+	SCR_ENTRY cursor;
+};
+
+class Menu {
+public:
+	using item_type = std::vector<SCR_ENTRY>;
+private:
+	std::vector<item_type> items;
+	MenuTileSet tileSet;
+
+public:
+	// Returns the index of the newly inserted items
+	int add(const item_type &value);
+
+	// Shows the menu and returns the selected item
+	int prompt(Background &bg);
+
+	Menu& setTileSet(const MenuTileSet &value);
+};
+
+#endif
