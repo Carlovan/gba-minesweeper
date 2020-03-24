@@ -15,12 +15,6 @@
 #include <cursor.h> // Cursor sprite
 #include "tiles_def.h"
 
-const int GRID_SIZE = 16;
-
-struct GameParams {
-	int gridSize;
-};
-
 void init_gba() {
 	// Initialize interrupts
 	irq_init(NULL);
@@ -44,8 +38,8 @@ int key_rpt_tri_vert() {
 	return KEY_TRIBOOL(key_repeat, KI_DOWN, KI_UP);
 }
 
-void play(Background &bgBackground, Background &bgSymbols, Sprite &sprCursor, const GameParams &params) {
-	Minesweeper game(params.gridSize);
+void play(Background &bgBackground, Background &bgSymbols, Sprite &sprCursor, const MinesweeperParams &params) {
+	Minesweeper game(params);
 	GameDrawer drawer(game, bgBackground, bgSymbols, sprCursor);
 
 	SpriteBlinker cursorBlinker(sprCursor, 50, 0, 4);
@@ -89,11 +83,14 @@ std::vector<SCR_ENTRY> intToTiles(int n) {
 	return tiles;
 }
 
-Menu createMenu(const std::vector<GameParams> &options) {
+Menu createMenu(const std::vector<MinesweeperParams> &options) {
 	Menu menu;
 	menu.setTileSet({
-		static_cast<SCR_ENTRY>(TilesIndexes::NONE),
+		static_cast<SCR_ENTRY>(TilesIndexes::WOOD_BACK),
 		static_cast<SCR_ENTRY>(TilesIndexes::RIGHT_ARROW),
+		static_cast<SCR_ENTRY>(TilesIndexes::WOOD_HEDGE),
+		static_cast<SCR_ENTRY>(TilesIndexes::WOOD_VEDGE),
+		static_cast<SCR_ENTRY>(TilesIndexes::WOOD_CORNER),
 	});
 
 	for(const auto &params : options) {
@@ -115,7 +112,7 @@ int main() {
 	Background bgSymbols    = Background::create(1, 2, 3, 1, BgBitDepht::BPP8, BgSize::REG_32x32).value();
 	Sprite     sprCursor    = Sprite::create(0, 2, SprBitDepht::BPP8, SprSize::S16x16, 0).value();
 
-	const std::vector<GameParams> options{{8}, {16}};
+	const std::vector<MinesweeperParams> options{{8}, {16}};
 	Menu startMenu = createMenu(options);
 
 	// Init graphics
@@ -127,7 +124,9 @@ int main() {
 
 	while(1) {
 		se_fill(bgBackground.getSbb(), (SCR_ENTRY)TilesIndexes::GRASS);
-		auto params = options[startMenu.prompt(bgSymbols)];
+		se_fill(bgSymbols.getSbb(), (SCR_ENTRY)TilesIndexes::NONE);
+		auto params = options[startMenu.prompt(bgBackground, bgSymbols)];
+		se_fill(bgSymbols.getSbb(), (SCR_ENTRY)TilesIndexes::NONE);
 		play(bgBackground, bgSymbols, sprCursor, params);
 	}
 }

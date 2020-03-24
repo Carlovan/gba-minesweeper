@@ -9,6 +9,9 @@
 struct MenuTileSet {
 	SCR_ENTRY background;
 	SCR_ENTRY cursor;
+	SCR_ENTRY horzEdge;
+	SCR_ENTRY vertEdge;
+	SCR_ENTRY corner;
 };
 
 class Menu {
@@ -23,7 +26,7 @@ public:
 	int add(const item_type &value);
 
 	// Shows the menu and returns the selected item
-	int prompt(Background &bg);
+	int prompt(Background &bg, Background &text);
 
 	Menu& setTileSet(const MenuTileSet &value);
 };

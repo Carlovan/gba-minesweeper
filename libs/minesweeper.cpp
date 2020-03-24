@@ -3,9 +3,9 @@
 #include <minesweeper>
 #include <random_helpers>
 
-Minesweeper::Minesweeper(const int gridSize):
-	cells(gridSize, std::vector(gridSize, static_cast<cell_type>(CellState::CLOSED))),
-	mines(gridSize, std::vector(gridSize, false)) {}
+Minesweeper::Minesweeper(const MinesweeperParams params):
+	cells(params.gridSize, std::vector(params.gridSize, static_cast<cell_type>(CellState::CLOSED))),
+	mines(params.gridSize, std::vector(params.gridSize, false)) {}
 
 int Minesweeper::columns() const {
 	return cells.size() > 0 ? cells[0].size() : 0;

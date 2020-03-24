@@ -11,6 +11,10 @@ enum class CellState {
 	FLAGGED = -2,
 };
 
+struct MinesweeperParams {
+	int gridSize;
+};
+
 struct Position {
 	int row, col;
 	Position operator+(const Position &other) const {
@@ -48,7 +52,7 @@ private:
 	int count_neighbours(const position_type pos) const;
 
 public:
-	Minesweeper(const int gridSize);
+	Minesweeper(const MinesweeperParams params);
 
 	int columns() const;
 	int rows() const;

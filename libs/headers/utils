@@ -1,0 +1,22 @@
+#ifndef UTILS_H
+#define UTILS_H
+
+SCR_ENTRY set_hflip(SCR_ENTRY tile, bool flipped) {
+	if (flipped) {
+		BIT_SET(tile, SE_HFLIP);
+	} else {
+		BIT_CLEAR(tile, SE_HFLIP);
+	}
+	return tile;
+}
+
+SCR_ENTRY set_vflip(SCR_ENTRY tile, bool flipped) {
+	if (flipped) {
+		BIT_SET(tile, SE_VFLIP);
+	} else {
+		BIT_CLEAR(tile, SE_VFLIP);
+	}
+	return tile;
+}
+
+#endif
